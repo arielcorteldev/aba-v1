@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./css/tokens.css" />
+    <link rel="stylesheet" href="./css/main.css" />
+    <title>LGU Maasin City - OCCR Appointment Booking Form</title>
+  </head>
+  <body>
+    <h1>Book an appointment with us</h1>
+    <form action="/submit">
+      <label for="first-name"
+        >First name
+        <input type="text" id="first-name" name="first-name" required />
+      </label>
+
+      <label for="middle-name"
+        >Middle name
+        <input type="text" id="middle-name" name="middle-name" />
+      </label>
+
+      <label for="last-name"
+        >Last name
+        <input type="text" id="last-name" name="last-name" required />
+      </label>
+
+      <label for="email"
+        >Email address
+        <input type="email" id="email" name="email" />
+      </label>
+
+      <label for="phone"
+        >Phone number
+        <input
+          type="tel"
+          id="phone"
+          name="phone"
+          pattern="[0-9]{4}-[0-9]{3}-[0-9]{4}"
+        />
+      </label>
+
+      <label for="service-type"
+        >Service type
+        <select id="service-type" name="service-type">
+          <option value="">Select a service</option>
+          <option value="late-registration">Late registration</option>
+          <option value="clerical-error-correction">
+            Clerical Error Correction
+          </option>
+          <option value="supplemental-report">Supplemental Report</option>
+          <option value="legitimation">Legitimation</option>
+          <option value="marriage-license">Marriage License</option>
+        </select>
+      </label>
+
+      <label for="appointment-date"
+        >Date of appointment
+        <input type="date" id="appointment-date" name="appointment-date" />
+      </label>
+
+      <label for="time-slot"
+        >Time slot
+        <select id="time-slot" name="time-slot">
+          <option value="">Select a time slot</option>
+          <option value="8am">8:00 AM</option>
+          <option value="9am">9:00 AM</option>
+          <option value="10am">10:00 AM</option>
+          <option value="11am">11:00 AM</option>
+          <option value="12nn">12:00 NN</option>
+          <option value="1pm">1:00 PM</option>
+          <option value="2pm">2:00 PM</option>
+          <option value="3pm">3:00 PM</option>
+          <option value="4pm">4:00 PM</option>
+        </select>
+      </label>
+
+      <button type="submit" class="btn btn-primary">Book appointment</button>
+    </form>
+  </body>
+</html>
