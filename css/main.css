@@ -85,6 +85,19 @@ form label {
     gap: var(--spacing-4);
 }
 
+form label .label-text {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+form label em {
+    font-style: normal;
+    font-weight: var(--font-weight-400);
+    color: var(--color-neutral-500);
+    font-size: var(--font-size-body-sm);
+}
+
 form input, select {
     padding: var(--spacing-8) var(--spacing-12);
     border-radius: var(--radius-sm);
