@@ -28,7 +28,7 @@
 
         <label for="email">
           <span class="label-text">Email address</span>
-          <input type="email" id="email" name="email" />
+          <input type="email" id="email" name="email" required />
         </label>
 
         <label for="phone">
@@ -38,12 +38,13 @@
             id="phone"
             name="phone"
             pattern="[0-9]{4}-[0-9]{3}-[0-9]{4}"
+            required
           />
         </label>
 
         <label for="service-type">
           <span class="label-text">Service type</span>
-          <select id="service-type" name="service-type">
+          <select id="service-type" name="service-type" required>
             <option value="">Select a service</option>
             <option value="late-registration">Late registration</option>
             <option value="clerical-error-correction">
@@ -57,12 +58,12 @@
 
         <label for="appointment-date">
           <span class="label-text">Date of appointment</span>
-          <input type="date" id="appointment-date" name="appointment-date" />
+          <input type="date" id="appointment-date" name="appointment-date" required/>
         </label>
 
         <label for="time-slot"
           >Time slot
-          <select id="time-slot" name="time-slot">
+          <select id="time-slot" name="time-slot" required>
             <option value="">Select a time slot</option>
             <option value="8am">8:00 AM</option>
             <option value="9am">9:00 AM</option>
