@@ -118,7 +118,7 @@ form select:last-of-type {
 }
 
 form input:focus, select:focus {
-    border: 2px solid var(--color-primary-700);
+    border: 1px solid var(--color-primary-700);
     outline: none;
 }
 
@@ -133,4 +133,25 @@ form .input-group {
         flex-direction: row;
         gap: var(--spacing-16);
     }   
+}
+
+.form-error {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-8);
+    font-size: var(--font-size-body-xs);
+    color: var(--color-error);
+}
+
+.form-error[hidden] {
+    display: none;
+}
+
+.form-error .icon {
+    flex-shrink: 0;
+}
+
+.error {
+    border: 1px solid var(--color-error);
+    background-color: var(--color-accent-red-50);
 }

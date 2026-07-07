@@ -16,12 +16,22 @@
           <label for="first-name">
             <span class="label-text">First name</span>
             <input type="text" id="first-name" name="first-name" required />
-            <span class="error-text" id="first-name-error"></span>
+            <span class="form-error" id="first-name-error" hidden>
+              <svg class="icon icon-error" viewBox="0 0 20 20" width="16" height="16" fill="currentColor">
+                <path d="M10 1a9 9 0 100 18 9 9 0 000-18zm1 13H9v-2h2v2zm0-4H9V5h2v6z"/>
+              </svg>
+              <span class="error-text"></span>
+            </span>
           </label>
           <label for="middle-name">
             <span class="label-text">Middle name <em>(Optional)</em></span>
             <input type="text" id="middle-name" name="middle-name" />
-            <span class="error-text" id="middle-name-error"></span>
+            <span class="form-error" id="middle-name-error" hidden>
+              <svg class="icon icon-error" viewBox="0 0 20 20" width="16" height="16" fill="currentColor">
+                <path d="M10 1a9 9 0 100 18 9 9 0 000-18zm1 13H9v-2h2v2zm0-4H9V5h2v6z"/>
+              </svg>
+              <span class="error-text"></span>
+            </span>
           </label>
         </div>
         
@@ -29,12 +39,22 @@
           <label for="last-name">
             <span class="label-text">Last name</span>
             <input type="text" id="last-name" name="last-name" required />
-            <span class="error-text" id="last-name-error"></span>
+            <span class="form-error" id="last-name-error" hidden>
+              <svg class="icon icon-error" viewBox="0 0 20 20" width="16" height="16" fill="currentColor">
+                <path d="M10 1a9 9 0 100 18 9 9 0 000-18zm1 13H9v-2h2v2zm0-4H9V5h2v6z"/>
+              </svg>
+              <span class="error-text"></span>
+            </span>
           </label>
           <label for="suffix">
             <span class="label-text">Suffix <em>(Optional)</em></span>
             <input type="text" id="suffix" name="suffix" required />
-            <span class="error-text" id="suffix-error"></span>
+            <span class="form-error" id="suffix-error" hidden>
+              <svg class="icon icon-error" viewBox="0 0 20 20" width="16" height="16" fill="currentColor">
+                <path d="M10 1a9 9 0 100 18 9 9 0 000-18zm1 13H9v-2h2v2zm0-4H9V5h2v6z"/>
+              </svg>
+              <span class="error-text"></span>
+            </span>
           </label>
         </div>
 
@@ -42,10 +62,16 @@
           <label for="email">
             <span class="label-text">Email address</span>
             <input type="email" id="email" name="email" required />
-            <span class="success-text" id="email-success"></span>
-            <span class="error-text" id="email-error"></span>
+            <span class="form-error" id="email-error" hidden>
+              <svg class="icon icon-error" viewBox="0 0 20 20" width="16" height="16" fill="currentColor">
+                <path d="M10 1a9 9 0 100 18 9 9 0 000-18zm1 13H9v-2h2v2zm0-4H9V5h2v6z"/>
+              </svg>
+              <svg class="icon icon-success" viewBox="0 0 20 20" width="16" height="16" fill="currentColor">
+                <path d="M10 1a9 9 0 100 18 9 9 0 000-18zm-1.2 13.4L4.6 10.2l1.4-1.4 2.8 2.8 5.6-5.6 1.4 1.4-7 7z"/>
+              </svg>
+              <span class="error-text"></span>
+            </span>
           </label>
-  
           <label for="phone">
             <span class="label-text">Phone number</span>
             <input
@@ -55,8 +81,15 @@
               pattern="[0-9]{4}-[0-9]{3}-[0-9]{4}"
               required
             />
-            <span class="success-text" id="phone-success"></span>
-            <span class="error-text" id="phone-error"></span>
+            <span class="form-error" id="phone-error" hidden>
+              <svg class="icon icon-error" viewBox="0 0 20 20" width="16" height="16" fill="currentColor">
+                <path d="M10 1a9 9 0 100 18 9 9 0 000-18zm1 13H9v-2h2v2zm0-4H9V5h2v6z"/>
+              </svg>
+              <svg class="icon icon-success" viewBox="0 0 20 20" width="16" height="16" fill="currentColor">
+                <path d="M10 1a9 9 0 100 18 9 9 0 000-18zm-1.2 13.4L4.6 10.2l1.4-1.4 2.8 2.8 5.6-5.6 1.4 1.4-7 7z"/>
+              </svg>
+              <span class="error-text"></span>
+            </span>
           </label>
         </div>
 
@@ -72,14 +105,26 @@
             <option value="legitimation">Legitimation</option>
             <option value="marriage-license">Marriage License</option>
           </select>
-          <span class="error-text" id="service-type-error"></span>
+          <span class="form-error" id="service-type-error" hidden>
+            <svg class="icon icon-error" viewBox="0 0 20 20" width="16" height="16" fill="currentColor">
+              <path d="M10 1a9 9 0 100 18 9 9 0 000-18zm1 13H9v-2h2v2zm0-4H9V5h2v6z"/>
+            </svg>
+            <span class="error-text"></span>
+          </span>
         </label>
 
         <label for="appointment-date">
           <span class="label-text">Date of appointment</span>
           <input type="date" id="appointment-date" name="appointment-date" required/>
-          <span class="success-text" id="date-success"></span>
-          <span class="error-text" id="date-error"></span>
+          <span class="form-error" id="appointment-date-error" hidden>
+            <svg class="icon icon-error" viewBox="0 0 20 20" width="16" height="16" fill="currentColor">
+              <path d="M10 1a9 9 0 100 18 9 9 0 000-18zm1 13H9v-2h2v2zm0-4H9V5h2v6z"/>
+            </svg>
+            <svg class="icon icon-success" viewBox="0 0 20 20" width="16" height="16" fill="currentColor">
+              <path d="M10 1a9 9 0 100 18 9 9 0 000-18zm-1.2 13.4L4.6 10.2l1.4-1.4 2.8 2.8 5.6-5.6 1.4 1.4-7 7z"/>
+            </svg>
+            <span class="error-text"></span>
+          </span>
         </label>
 
         <label for="time-slot"
@@ -96,8 +141,15 @@
             <option value="3pm">3:00 PM</option>
             <option value="4pm">4:00 PM</option>
           </select>
-          <span class="success-text" id="time-slot-success"></span>
-          <span class="error-text" id="time-slot-error"></span>
+          <span class="form-error" id="time-slot-error" hidden>
+            <svg class="icon icon-error" viewBox="0 0 20 20" width="16" height="16" fill="currentColor">
+              <path d="M10 1a9 9 0 100 18 9 9 0 000-18zm1 13H9v-2h2v2zm0-4H9V5h2v6z"/>
+            </svg>
+            <svg class="icon icon-success" viewBox="0 0 20 20" width="16" height="16" fill="currentColor">
+              <path d="M10 1a9 9 0 100 18 9 9 0 000-18zm-1.2 13.4L4.6 10.2l1.4-1.4 2.8 2.8 5.6-5.6 1.4 1.4-7 7z"/>
+            </svg>
+            <span class="error-text"></span>
+          </span>
         </label>
 
         <button type="submit" class="btn btn-primary">Book appointment</button>

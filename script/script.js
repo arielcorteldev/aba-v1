@@ -1,6 +1,7 @@
 const form = document.getElementById("booking-form");
 const firstNameInput = document.getElementById("first-name");
 const firstNameError = document.getElementById("first-name-error");
+const firstNameErrorText = document.querySelector('#first-name-error .error-text');
 
 const FIRST_NAME_MIN_LENGTH = 2;
 const FIRST_NAME_PATTERN = /^[A-Za-z\s'-]+$/;
@@ -25,7 +26,7 @@ function validateFirstName() {
 function setFirstNameError(message) {
     firstNameInput.classList.add('error');
     firstNameInput.setAttribute('aria-invalid', 'true');
-    firstNameError.textContent = message;
+    firstNameErrorText.textContent = message;
     firstNameError.hidden = false;
     return false;
 }
@@ -33,7 +34,7 @@ function setFirstNameError(message) {
 function clearFirstNameError() {
     firstNameInput.classList.remove('error');
     firstNameInput.removeAttribute('aria-invalid');
-    firstNameError.textContent = '';
+    firstNameErrorText.textContent = '';
     firstNameError.hidden = true;
 }
 
