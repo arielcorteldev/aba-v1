@@ -177,7 +177,7 @@
 
   /* States */
   --color-error: var(--color-accent-red-500);
-  --color-sucess: var(--color-accent-green-400);
+  --color-success: var(--color-accent-green-400);
   --color-caution: var(--color-accent-yellow-500);
   --color-information: var(--color-accent-blue-500);
 
