@@ -177,6 +177,14 @@ input.error:-webkit-autofill:focus {
   -webkit-text-fill-color: var(--color-neutral-950);
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px var(--color-neutral-50) inset;
+  -webkit-text-fill-color: var(--color-neutral-950);
+}
+
+
 .form-error .icon-success {
   display: none;
 }
