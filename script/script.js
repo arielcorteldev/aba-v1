@@ -1,4 +1,4 @@
-// Constant regex pattern values for the proper format of name, email, phone number
+// Regex pattern for the proper format of name, email, phone number
 const NAME_MIN_LENGTH = 2;
 const NAME_PATTERN = /^[A-Za-z\s'-]+$/;
 const EMAIL_PATTERN =
@@ -7,8 +7,9 @@ const PH_MOBILE_PATTERN = /^(09|\+639)\d{9}$/;
 
 // Select the booking form element 
 const form = document.getElementById("booking-form");
+const submitButton = document.querySelector('[type="submit"]');
 
-// Array of field configuration objects with relevant keys
+// Array of field configuration objects with relevant keys:
 // ID of the field element
 // If field is required or optional
 // Required message if required
@@ -134,6 +135,8 @@ fieldConfigs.forEach((config) => {
   // Select the input based on the id of the current config
     const input = document.getElementById(config.id);
 
+    input.addEventListener('input', updateSubmitButton);
+
     // Add focus event listener to the selected input
     input.addEventListener('focus', () => {
       // On input focus, check if input contains error class
@@ -239,45 +242,48 @@ function clearFieldError(config) {
   errorSpan.hidden = true;
 }
 
-// Function to validate the field
-function validateField(config) {
-
-  // Select the input element and get the value of the input
+function checkFieldValidity(config) {
   const input = document.getElementById(config.id);
   const value = input.value.trim();
 
-  // Check if field is required and the value is blank
   if (config.required && value === "") {
-    // Return result of setFieldError function - validation failed
-    return setFieldError(config, config.requiredMessage);
+    return { valid: false, message: config.requiredMessage };
   }
-
-  // Check if field is not required and the value is blank
   if (!config.required && value === "") {
-    // Just clear the field and return true, since field is not required
-    clearFieldError(config);
-    return true;
+    return { valid: true, message: null };
   }
-  
-  // Loop through each rule in config.rules
   for (const rule of config.rules) {
-
-    // Check if each validation rule is successful or not (true or false)
     if (!rule.test(value)) {
-      // If not, return validation failed/error
-      return setFieldError(config, rule.message);
+      return { valid: false, message: rule.message };
     }
   }
+  return { valid: true, message: null };
+}
 
-  // Check if field has success state
+// Function to validate the field
+function validateField(config) {
+  const { valid, message } = checkFieldValidity(config);
+
+  if (!valid) {
+    return setFieldError(config, message);
+  }
+
   if (config.hasSuccessState) {
-    // If yes, return result of setFieldSuccess - validation success and show success state
     return setFieldSuccess(config);
   }
 
   // After all checks, if no errors, and no need for success state, clear the field error and return true - validation successful
   clearFieldError(config);
   return true;
+}
+
+function isFieldValid(config) {
+  return checkFieldValidity(config).valid;
+}
+
+function updateSubmitButton() {
+  const allValid = fieldConfigs.every(isFieldValid);
+  submitButton.disabled = !allValid;
 }
 
 // Add submit event listener to form
