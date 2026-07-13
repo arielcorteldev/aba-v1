@@ -135,6 +135,7 @@ fieldConfigs.forEach((config) => {
   // Select the input based on the id of the current config
     const input = document.getElementById(config.id);
 
+    // Add input event listener to selected input and run updateSubmitButton function for every input
     input.addEventListener('input', updateSubmitButton);
 
     // Add focus event listener to the selected input
@@ -242,33 +243,50 @@ function clearFieldError(config) {
   errorSpan.hidden = true;
 }
 
+// Function to check field validity
 function checkFieldValidity(config) {
+  // Get the input element using config.id
   const input = document.getElementById(config.id);
+  // Get the value of the input element
   const value = input.value.trim();
 
+  // Check if input is required and the value is empty
   if (config.required && value === "") {
+    // Return object with keys valid set to false and message set to config.requiredMessage
     return { valid: false, message: config.requiredMessage };
   }
+  // Check if input is not required and value is empty
   if (!config.required && value === "") {
+    // Return object with keys valid set to true and message set to null
     return { valid: true, message: null };
   }
+  // Loop through the config.rules
   for (const rule of config.rules) {
+    // Check if any rule fails
     if (!rule.test(value)) {
+      // If yes return object with keys valid set to false and message set to rule.message
       return { valid: false, message: rule.message };
     }
   }
+
+  // If no fails, return object with keys valid set to true and message set to null
   return { valid: true, message: null };
 }
 
 // Function to validate the field
 function validateField(config) {
+  // Get the valid and message keys from result of checkFieldValidity
   const { valid, message } = checkFieldValidity(config);
 
+  // Check if valid is false
   if (!valid) {
+    // If yes, return setFieldError
     return setFieldError(config, message);
   }
 
+  // Check if field config has a successState
   if (config.hasSuccessState) {
+    // If yes, return setFieldSuccess
     return setFieldSuccess(config);
   }
 
@@ -277,12 +295,17 @@ function validateField(config) {
   return true;
 }
 
+// Function to check if field is valid
 function isFieldValid(config) {
+  // Returns the valid key from the result of running checkFieldValidity
   return checkFieldValidity(config).valid;
 }
 
+// Function to update the submit button
 function updateSubmitButton() {
+  // Declare allValid variable that will be set to either true or false depending on if every field is valid
   const allValid = fieldConfigs.every(isFieldValid);
+  // Set the disabled attribute of submit button to false if allValid is true (vice versa)
   submitButton.disabled = !allValid;
 }
 
