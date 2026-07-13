@@ -230,6 +230,9 @@ function clearFieldError(config) {
   // Remove the error class from input
   input.classList.remove("error");
 
+  // Remove the success class from input
+  input.classList.remove("success");
+
   // Remove the aria-invalid attribute from input
   input.removeAttribute('aria-invalid');
 
@@ -329,3 +332,5 @@ form.addEventListener("submit", (e) => {
     console.log("Form is valid - ready to submit");
   }
 });
+
+updateSubmitButton();
