@@ -1,0 +1,56 @@
+# ---------------------------------------------------------------------------
+# Operating System Files
+# ---------------------------------------------------------------------------
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows system files
+Thumbs.db
+Ehthumbs.db
+Desktop.ini
+
+# ---------------------------------------------------------------------------
+# Code Editor / IDE Settings
+# ---------------------------------------------------------------------------
+# Visual Studio Code
+.vscode/
+!.vscode/extensions.json
+
+# IntelliJ / WebStorm / PyCharm
+.idea/
+*.iws
+*.iml
+
+# ---------------------------------------------------------------------------
+# Logs, Caches, and Temporary Files
+# ---------------------------------------------------------------------------
+*.log
+logs/
+*.swp
+*.tmp
+.cache/
+
+# ---------------------------------------------------------------------------
+# Package Managers and Dependencies (Choose yours)
+# ---------------------------------------------------------------------------
+# Node.js / JavaScript
+node_modules/
+/dist/
+/build/
+
+# Python virtual environments
+venv/
+.venv/
+env/
+__pycache__/
+*.pyc
+
+# ---------------------------------------------------------------------------
+# Environment Variables and Secrets (CRITICAL for safety)
+# ---------------------------------------------------------------------------
+.env
+.env.local
+.env.*.local
+*.pem
