@@ -227,10 +227,11 @@ CREATE UNIQUE INDEX uq_queue_one_active_per_appointment
   ON queue_entries (appointment_id)
   WHERE status <> 'requeued';
 
--- Powers the "call next" query: WHERE status = 'waiting'
--- ORDER BY priority_tier, source, scheduled_time, enqueued_at
-CREATE INDEX idx_queue_call_next
-  ON queue_entries (status, priority_tier, source, scheduled_time, enqueued_at);
+-- Narrows call-next to the waiting rows. The tier-dependent ordering
+-- (priority first, then booked, then walk-in) lives in the call-next query.
+CREATE INDEX idx_queue_waiting
+  ON queue_entries (enqueued_at)
+  WHERE status = 'waiting';
 
 -- Finds ALL entries for an appointment, including requeued ones (history/audit)
 CREATE INDEX idx_queue_appointment_id ON queue_entries (appointment_id);
