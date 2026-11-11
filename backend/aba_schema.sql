@@ -158,6 +158,7 @@ CREATE TABLE appointments (
   citizen_id    UUID NOT NULL REFERENCES citizens (id) ON DELETE RESTRICT,   -- keep appointment history
   schedule_id   UUID NOT NULL REFERENCES schedules (id) ON DELETE RESTRICT,
   status        appointment_status NOT NULL DEFAULT 'pending',
+  reference_number VARCHAR(12) NOT NULL UNIQUE,  -- short code shown to the client; staff use it at check-in
   cancelled_at  TIMESTAMPTZ,
   created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
