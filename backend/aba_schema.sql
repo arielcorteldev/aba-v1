@@ -1,6 +1,6 @@
 -- ============================================================
 -- Appointment Booking App (ABA) + QMS Integration Schema
--- PostgreSQL  |  Revision 2 (applies review gaps #1 to #10)
+-- PostgreSQL  |  Revision 3 (applies review gaps #1 to #10)
 -- ============================================================
 -- NOTE: running this file against a database that already has the
 -- old version will fail (tables/types already exist). Drop the old
@@ -207,25 +207,29 @@ CREATE TABLE queue_entries (
   created_at              TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at              TIMESTAMPTZ NOT NULL DEFAULT now(),
 
-  -- Walk-ins may be anonymous; booked entries must have a citizen and a service
+  -- Walk-ins may be anonymous; booked entries must have a citizen and a service and a slot time
   CONSTRAINT chk_walkin_or_complete
-    CHECK (source = 'walkin' OR (citizen_id IS NOT NULL AND service_id IS NOT NULL)),
+    CHECK (source = 'walkin' OR (citizen_id IS NOT NULL AND service_id IS NOT NULL AND scheduled_time IS NOT NULL)),
 
   -- "source says booked" must be true exactly when an appointment is attached
   CONSTRAINT chk_source_matches_appointment
-    CHECK ((source = 'appointment') = (appointment_id IS NOT NULL))
+    CHECK ((source = 'appointment') = (appointment_id IS NOT NULL)),
+  
+  -- being in the priority lane must be true exactly when there’s a claim
+  CONSTRAINT chk_tier_matches_priority_check
+    CHECK ((priority_tier = 'senior_pwd') = (priority_check <> 'none'))
 );
 
 -- One shared daily sequence for regular tickets, one for priority tickets (Manila time)
 CREATE UNIQUE INDEX uq_queue_ticket_per_day
   ON queue_entries (ticket_number, ((enqueued_at AT TIME ZONE 'Asia/Manila')::date));
 
--- One ACTIVE queue entry per appointment. A 'requeued' entry (failed priority check)
+-- One ACTIVE queue entry per appointment. 'requeued' and 'abandoned' entries
 -- is ignored, so the client can check in again on the same appointment.
 -- Walk-ins have NULL appointment_id, and NULLs never count as duplicates.
 CREATE UNIQUE INDEX uq_queue_one_active_per_appointment
   ON queue_entries (appointment_id)
-  WHERE status <> 'requeued';
+  WHERE status NOT IN ('requeued', 'abandoned');
 
 -- Narrows call-next to the waiting rows. The tier-dependent ordering
 -- (priority first, then booked, then walk-in) lives in the call-next query.
