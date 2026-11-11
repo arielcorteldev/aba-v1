@@ -65,9 +65,16 @@ CREATE TABLE citizens (
   updated_at    TIMESTAMPTZ NOT NULL DEFAULT now()  -- the API sets this on every update
 );
 
--- Guest booking form: the API finds a citizen by email, or creates one.
--- lower() makes "Ana@Mail.com" and "ana@mail.com" the same person.
-CREATE UNIQUE INDEX uq_citizens_email ON citizens (lower(email));
+-- Guest booking form: the API finds a citizen by email and name, or creates one.
+-- The same email, name, and suffix means the same person, while one email
+-- can belong to many people (a caregiver booking for family).
+CREATE UNIQUE INDEX uq_citizens_identity ON citizens (
+  lower(email),
+  lower(first_name),
+  lower(coalesce(middle_name, '')),
+  lower(last_name),
+  lower(coalesce(suffix, ''))
+);
 
 -- Phone is searchable but NOT unique, because family members often share one phone
 CREATE INDEX idx_citizens_phone ON citizens (phone);
