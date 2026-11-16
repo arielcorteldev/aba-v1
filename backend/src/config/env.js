@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 // Load backend/.env into process.env (runs once, at import time)
 dotenv.config();
 
-// 1. Presence check: every variable must exist and not be empty.
+// Presence check: every variable must exist and not be empty.
 const required = [
     'PORT',
     'DATABASE_URL',
