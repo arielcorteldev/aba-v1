@@ -8,7 +8,7 @@ const required = [
     'PORT',
     'DATABASE_URL',
     'ADMIN_KEY',
-    'WINDOWS_COUNT',
+    'SERVING_WINDOWS_COUNT',
     'TIMEZONE',
     'FRONTEND_ORIGIN',
 ];
@@ -25,13 +25,15 @@ if (missing.length > 0) {
 //    then confirm the result is a real positive whole number.
 //    Number('abc') is NaN, and Number.isInteger(NaN) is false, so it's caught.
 const port = Number(process.env.PORT);
-const windowsCount = Number(process.env.WINDOWS_COUNT);
+// Only windows that call from the queue count here. The Releasing Window is
+// deliberately excluded, so capacity math never needs a hidden "minus one".
+const servingWindowsCount = Number(process.env.SERVING_WINDOWS_COUNT);
 
 if (!Number.isInteger(port) || port <= 0) {
     throw new Error(`PORT must be a positive whole number, got "${process.env.PORT}"`);
 }
-if (!Number.isInteger(windowsCount) || windowsCount <= 0) {
-    throw new Error(`WINDOWS_COUNT must be a positive whole number, got "${process.env.WINDOWS_COUNT}"`);
+if (!Number.isInteger(servingWindowsCount) || servingWindowsCount <= 0) {
+    throw new Error(`SERVING_WINDOWS_COUNT must be a positive whole number, got "${process.env.SERVING_WINDOWS_COUNT}"`);
 }
 
 // 3. Admin key check: refuse short keys and leftover placeholder values.
@@ -55,7 +57,7 @@ const config = Object.freeze({
     port,
     database_url: process.env.DATABASE_URL,
     admin_key: adminKey,
-    windows_count: windowsCount,
+    serving_windows_count: servingWindowsCount,
     timezone: process.env.TIMEZONE,
     frontend_origin: process.env.FRONTEND_ORIGIN,
 });
