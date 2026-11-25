@@ -1,7 +1,18 @@
 import dotenv from 'dotenv';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+// Without a path, dotenv looks for .env in the folder you RAN node from
+// (process.cwd()), so starting the server from the repo root would miss it.
+// Instead, resolve the path from this file's own location, which never changes.
+// ES modules have no __dirname, so we rebuild it from import.meta.url
+// (a file:// URL of this file). fileURLToPath also decodes the space in
+// "appointment booking" (%20 → ' ').
+const __dirname = path.dirname(fileURLToPath(import.meta.url)); // backend/src/config
+const envPath = path.resolve(__dirname, '../../.env');           // backend/.env
 
 // Load backend/.env into process.env (runs once, at import time)
-dotenv.config();
+dotenv.config({ path: envPath });
 
 // Presence check: every variable must exist and not be empty.
 const required = [
