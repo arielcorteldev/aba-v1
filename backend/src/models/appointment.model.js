@@ -172,4 +172,90 @@ async function createAppointment({ scheduleId, citizen }) {
     }
 }
 
-export { createAppointment };
+// Cancel a booking. The citizen proves ownership with BOTH the reference
+// number and the email used to book. Returns the cancelled booking's summary.
+//
+// Why one conditional UPDATE instead of "SELECT, check rules in JS, UPDATE"?
+// Check-then-write in two statements has a gap between them. Two cancel
+// requests (a double-click, a retry) could both SELECT "confirmed", both pass
+// the check, and both UPDATE. Putting EVERY rule in the UPDATE's WHERE makes
+// the check and the write one atomic statement:
+//
+//   Request A                         Request B
+//   UPDATE ... WHERE status IN        UPDATE same row → waits for A's row lock
+//     (pending, confirmed) → 1 row
+//   commit                            re-checks WHERE on the NEW row:
+//                                     status is 'cancelled' → 0 rows
+//
+// Postgres does that re-check automatically: when an UPDATE waited on a row
+// another transaction changed, it re-evaluates its WHERE against the updated
+// version before writing. So exactly one request can ever succeed.
+// No explicit transaction is needed: a single statement is already atomic.
+//
+// The rules, all in WHERE:
+//   - reference number matches (validator uppercases it first)
+//   - email matches the booking citizen's, case-insensitively
+//   - status is still pending/confirmed (not cancelled, completed, no-show)
+//   - the appointment date is AFTER today in Manila (cancel only before the day)
+//
+// cancelled_at and status change together, which satisfies the schema's
+// chk_cancelled_at_matches_status. updated_at has no trigger, so we set it.
+//
+// UPDATE ... FROM joins other tables into an UPDATE, so the WHERE can check
+// the citizen's email and the schedule's date. Only `appointments` is written.
+async function cancelAppointment({ referenceNumber, email }) {
+    const today = todayInZone();
+
+    const updateResult = await pool.query(
+        `UPDATE appointments a
+            SET status       = 'cancelled',
+                cancelled_at = now(),
+                updated_at   = now()
+           FROM citizens c, schedules s
+          WHERE a.citizen_id = c.id
+            AND a.schedule_id = s.id
+            AND a.reference_number = $1
+            AND lower(c.email) = lower($2)
+            AND a.status IN ('pending', 'confirmed')
+            AND s.date > $3
+         RETURNING a.reference_number, a.status, a.cancelled_at,
+                   s.date, s.start_time, s.end_time`,
+        [referenceNumber, email, today]
+    );
+
+    // 1 row: cancelled. This is the normal path, so only one query runs.
+    if (updateResult.rows.length === 1) {
+        return updateResult.rows[0];
+    }
+
+    // 0 rows: SOMETHING in the WHERE failed. Only now do we look the booking up
+    // to pick the right error message. This lookup is just for the message;
+    // the decision (nothing was cancelled) was already made atomically above.
+    //
+    // The lookup still requires reference number AND email. That's the
+    // security point: a wrong reference number and a wrong email both land in
+    // "no row" → the same 404, so the API never reveals which reference
+    // numbers exist. Anyone who gets PAST this check already knows both values,
+    // so telling them "already cancelled" leaks nothing new.
+    const lookupResult = await pool.query(
+        `SELECT a.status
+           FROM appointments a
+           JOIN citizens c ON c.id = a.citizen_id
+          WHERE a.reference_number = $1
+            AND lower(c.email) = lower($2)`,
+        [referenceNumber, email]
+    );
+    const booking = lookupResult.rows[0];
+
+    if (!booking) {
+        throw new AppError(404, 'APPOINTMENT_NOT_FOUND', 'No booking matches that reference number and email.');
+    }
+    if (booking.status === 'cancelled') {
+        throw new AppError(409, 'ALREADY_CANCELLED', 'This booking has already been cancelled.');
+    }
+    // Anything else: the appointment is today or in the past, or it is
+    // completed / no_show. One message covers all of them.
+    throw new AppError(422, 'CANNOT_CANCEL', 'This booking can no longer be cancelled. Cancellation is only allowed before the appointment day.');
+}
+
+export { createAppointment, cancelAppointment };
