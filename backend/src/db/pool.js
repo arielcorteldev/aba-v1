@@ -6,6 +6,15 @@ import { config } from '../config/env.js';
 
 const { Pool } = pg;
 
+// Keep Postgres DATE values as plain 'YYYY-MM-DD' strings.
+// By default pg turns a DATE (type id 1082) into a JS Date at LOCAL midnight.
+// A DATE has no time or zone, but a JS Date is an exact instant, so the moment
+// it gets serialized (e.g. res.json → toISOString in UTC) '2026-11-26' can come
+// out as '2026-11-25T16:00:00.000Z' — the wrong day for a Manila office.
+// Strings avoid that entirely and compare correctly with our dates.js helpers.
+// This is global for the pg library, so setting it once here covers every query.
+pg.types.setTypeParser(1082, (value) => value);
+
 // One pool for the whole app. ES modules run once and are cached, so every
 // file that imports `pool` gets this same object, not a new pool each time.
 // A pool keeps a few open connections and lends them out per query, which is
