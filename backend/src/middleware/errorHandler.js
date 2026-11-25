@@ -1,3 +1,5 @@
+import { AppError } from '../utils/AppError.js';
+
 // Every error response in the API uses one shape:
 //   { error: { code: 'MACHINE_READABLE', message: 'Human readable' } }
 // `code` is for the frontend to branch on (it never changes wording);
@@ -40,12 +42,22 @@ function errorHandler(err, req, res, next) {
         });
     }
 
+    // Expected business-rule failures thrown on purpose by models/controllers
+    // (see utils/AppError.js). Their message was written for the citizen, so
+    // it's safe to send as-is. No console.error: these aren't bugs, and logging
+    // every "slot full" would bury the real problems.
+    if (err instanceof AppError) {
+        return res.status(err.status).json({
+            error: { code: err.code, message: err.message },
+        });
+    }
+
     // Anything else is unexpected: a bug, or the database being down.
     // Log the full error (with stack) server-side so we can debug it, but send
     // the client only a generic message. Stack traces and SQL errors can
     // reveal table names, file paths and query structure to an attacker.
-    // (Later steps add specific cases above this line, e.g. Postgres 23505
-    // from uq_active_booking → "you already have this booking".)
+    // (Postgres errors like 23505 from uq_active_booking are caught in the
+    // model and re-thrown as an AppError, so they arrive in the branch above.)
     console.error(err);
     return res.status(500).json({
         error: { code: 'INTERNAL_ERROR', message: 'Something went wrong. Please try again later.' },
