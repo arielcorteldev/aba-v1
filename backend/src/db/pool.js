@@ -24,6 +24,39 @@ const pool = new Pool({
     // pg's default is 0, meaning "wait forever". If the host is wrong or
     // unreachable, startup would hang silently. 5 seconds makes it fail fast.
     connectionTimeoutMillis: 5000,
+
+    // ── Server-side safety timeouts (all in milliseconds) ──
+    // pg sends these to Postgres when each connection opens, so Postgres
+    // itself enforces them on every query from this app. All three default to
+    // "no limit", which means one stuck query can hold a pooled connection
+    // forever. The pool only has 10, so a few stuck requests freeze the whole
+    // API, including unrelated GETs.
+    //
+    // Most likely trigger: the booking transaction's SELECT ... FOR UPDATE.
+    // Every request for the same block waits on that row lock WHILE holding a
+    // pool connection. Normally the lock holder finishes in milliseconds; these
+    // limits cover the abnormal case (a stalled query, or someone who left a
+    // BEGIN open in psql while holding the same lock).
+    //
+    // When a limit trips, Postgres cancels the statement with an error. It
+    // reaches our catch → ROLLBACK → client.release(), so the connection goes
+    // back to the pool, and the citizen gets a 500 "try again" instead of an
+    // endless spinner.
+
+    // Max time any single statement may run. Every real query here takes
+    // milliseconds, so 10s only ever catches something genuinely broken.
+    statement_timeout: 10000,
+
+    // Max time to WAIT for a lock (the FOR UPDATE row lock, or the row lock in
+    // the cancel UPDATE). Shorter than statement_timeout so a lock problem
+    // fails fast and shows up as its own error code (55P03) in the logs.
+    lock_timeout: 5000,
+
+    // A connection that ran BEGIN and then went quiet is holding its locks for
+    // nothing. Our code always ends with COMMIT/ROLLBACK, so this only fires
+    // on a bug or a crash mid-transaction; Postgres then closes that session
+    // and its locks are released.
+    idle_in_transaction_session_timeout: 30000,
 });
 
 // This fires when a connection that is sitting IDLE in the pool breaks
